@@ -7,16 +7,17 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 export default function App() {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-
-  let upc;
+  const [upc, setUpc] = useState(null);
 
   
 
   async function sendApiRequest(){
+   
+
     let APP_ID ="30823efb";
     let API_KEY = "f8e4435b29ffee39a8bd30189d9948a3";
     console.log(upc);
-    return fetch(`https://api.edamam.com/api/food-database/v2/parser?app_id=${APP_ID}&app_key=${API_KEY}&upc=0064100111356&nutrition-type=cooking`, {
+    return fetch(`https://api.edamam.com/api/food-database/v2/parser?app_id=${APP_ID}&app_key=${API_KEY}&upc=${upc}&nutrition-type=cooking`, {
       method: 'GET',
       cache: 'no-cache',
       header: {
@@ -37,11 +38,9 @@ export default function App() {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    upc = data;
+    setUpc(`${data}`);
 
-   
-
-
+  
     alert(`${upc}`);
   };
 
@@ -61,7 +60,7 @@ export default function App() {
       style={StyleSheet.absoluteFillObject}
     />
     {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
-    {scanned && <Button title={'Tap to Scan Again1'} onPress={() => sendApiRequest().then(data => {console.log(data.hints[0].food.nutrients);})} />}
+    {<Button title={'Tap to Scan Again1'} onPress={() => sendApiRequest().then(data => {console.log(data.hints[0].food.nutrients);})} />}
 
   </View>
   );
